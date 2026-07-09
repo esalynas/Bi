@@ -6,13 +6,9 @@ const chat = document.getElementById("chatBody");
 function agregarBot(texto){
 
 const div=document.createElement("div");
-
 div.className="bot";
-
 div.innerHTML=texto;
-
 chat.appendChild(div);
-
 chat.scrollTop=chat.scrollHeight;
 
 }
@@ -20,13 +16,9 @@ chat.scrollTop=chat.scrollHeight;
 function agregarUsuario(texto){
 
 const div=document.createElement("div");
-
 div.className="user";
-
 div.innerHTML=texto;
-
 chat.appendChild(div);
-
 chat.scrollTop=chat.scrollHeight;
 
 }
