@@ -1,55 +1,168 @@
 let datasetActual = null;
 
+
 function mostrarDataset(nombre){
 
     datasetActual = DATASETS[nombre];
 
-    let html = `
-    <div class="dataset">
+    const tabla = document.getElementById("tabla");
 
-        <h3>${datasetActual.titulo}</h3>
 
-        <table>
+    tabla.innerHTML = `
 
-        <thead>
-        <tr>
-    `;
+    <div class="generando">
 
-    datasetActual.columnas.forEach(col=>{
+        🧠 Analizando información...
 
-        html += `<th>${col}</th>`;
+        <br><br>
 
-    });
+        <div class="progress">
 
-    html += `
-        </tr>
-        </thead>
+            <div id="barra"></div>
 
-        <tbody>
-    `;
+        </div>
 
-    datasetActual.datos.forEach(fila=>{
+        <p id="proceso">
 
-        html += "<tr>";
+        Inicializando consulta...
 
-        fila.forEach(celda=>{
-
-            html += `<td>${celda}</td>`;
-
-        });
-
-        html += "</tr>";
-
-    });
-
-    html += `
-        </tbody>
-
-        </table>
+        </p>
 
     </div>
+
     `;
 
-    agregarBot(html);
+
+    let pasos = [
+
+        "Conectando fuente de datos...",
+
+        "Validando estructura...",
+
+        "Procesando registros...",
+
+        "Construyendo tabla..."
+
+    ];
+
+
+    let i=0;
+
+
+    const intervalo=setInterval(()=>{
+
+
+        document.getElementById("proceso").innerHTML =
+        pasos[i];
+
+
+        document.getElementById("barra").style.width =
+        ((i+1)*25)+"%";
+
+
+        i++;
+
+
+        if(i===pasos.length){
+
+
+            clearInterval(intervalo);
+
+
+            construirTabla();
+
+
+        }
+
+
+    },700);
+
+
+}
+
+
+
+function construirTabla(){
+
+
+const tabla=document.getElementById("tabla");
+
+
+let html=`
+
+
+<h3>
+
+${datasetActual.titulo}
+
+</h3>
+
+
+<table>
+
+
+<tr>
+
+`;
+
+
+
+datasetActual.columnas.forEach(col=>{
+
+html+=`
+
+<th>${col}</th>
+
+`;
+
+});
+
+
+html+=`</tr>`;
+
+
+
+datasetActual.datos.forEach(fila=>{
+
+
+html+=`<tr>`;
+
+
+fila.forEach(valor=>{
+
+
+html+=`
+
+<td>${valor}</td>
+
+`;
+
+
+});
+
+
+html+=`</tr>`;
+
+
+});
+
+
+html+=`
+
+</table>
+
+`;
+
+
+
+tabla.innerHTML=html;
+
+
+agregarBot(
+"✅ Base generada correctamente.<br><br>Puedes solicitar un dashboard o un informe ejecutivo."
+);
+
+
+escribir("Sistema listo.");
 
 }
