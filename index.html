@@ -1,0 +1,2042 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Construir desde la operación | Esteban Salinas</title>
+
+<style>
+:root{
+--bg:#070b11;
+--panel:rgba(255,255,255,.06);
+--line:rgba(255,255,255,.12);
+--text:#ffffff;
+--muted:#9fa7b5;
+--accent:#9fd9ff;
+--blur:24px;
+--shadow:0 40px 80px rgba(0,0,0,.55);
+--max:1300px;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+scroll-behavior:smooth;
+}
+
+body{
+font-family:Inter,Segoe UI,sans-serif;
+background:
+radial-gradient(circle at 10% 10%,rgba(116,173,255,.10),transparent 30%),
+radial-gradient(circle at 90% 70%,rgba(255,255,255,.04),transparent 30%),
+linear-gradient(180deg,#05080d,#0b1119,#121926);
+color:var(--text);
+overflow-x:hidden;
+}
+
+/* ORBS */
+.orb{
+position:fixed;
+border-radius:50%;
+filter:blur(140px);
+opacity:.16;
+pointer-events:none;
+}
+.orb1{
+width:520px;height:520px;
+background:#67b9ff;
+top:-120px;left:-80px;
+animation:float1 14s ease infinite;
+}
+.orb2{
+width:420px;height:420px;
+background:#ffffff;
+right:-100px;bottom:-60px;
+animation:float2 18s ease infinite;
+}
+@keyframes float1{50%{transform:translate(40px,60px);}}
+@keyframes float2{50%{transform:translate(-50px,-80px);}}
+
+/* GRID EFFECT */
+body::before{
+content:"";
+position:fixed;
+inset:0;
+background:linear-gradient(90deg,transparent,rgba(255,255,255,.015),transparent);
+background-size:250px;
+animation:grid 16s linear infinite;
+pointer-events:none;
+}
+@keyframes grid{
+100%{transform:translateX(250px);}
+}
+
+/* MOUSE LIGHT */
+body::after{
+content:"";
+position:fixed;
+inset:0;
+background:radial-gradient(circle at var(--x,50%) var(--y,50%), rgba(159,217,255,.08), transparent 40%);
+pointer-events:none;
+}
+
+/* LAYOUT */
+section{
+width:min(92%,var(--max));
+margin:auto;
+padding:110px 0;
+}
+
+/* Ocultar sección inicialmente */
+#casos { display: none; }
+
+/* HERO */
+.hero-box{
+padding:60px;
+border-radius:40px;
+background:var(--panel);
+backdrop-filter:blur(var(--blur));
+border:1px solid var(--line);
+box-shadow:var(--shadow);
+position:relative;
+overflow:hidden;
+}
+
+.badge{
+display:inline-flex;
+padding:10px 18px;
+border-radius:999px;
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.12);
+color:var(--accent);
+font-size:13px;
+letter-spacing:2px;
+text-transform:uppercase;
+}
+
+h1{
+margin-top:22px;
+font-size:clamp(40px, 8vw, 112px);
+line-height:.92;
+letter-spacing:-4px;
+}
+
+.typed{display:block;color:var(--accent);min-height:1.4em;}
+.static{display:block;}
+
+.sub{
+margin-top:24px;
+max-width:760px;
+font-size:22px;
+color:var(--muted);
+line-height:1.7;
+}
+
+.flow{
+margin-top:36px;
+display:flex;
+flex-wrap:wrap;
+gap:14px;
+}
+
+.flow span{
+padding:12px 18px;
+background:rgba(255,255,255,.05);
+border:1px solid rgba(255,255,255,.10);
+border-radius:999px;
+}
+
+.cta{
+margin-top:46px;
+display:inline-flex;
+padding:18px 32px;
+border-radius:18px;
+color:#000;
+font-weight:700;
+text-decoration:none;
+background:white;
+cursor: pointer;
+}
+
+/* GRID */
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:26px;
+}
+
+.card{
+padding:34px;
+background:var(--panel);
+border:1px solid var(--line);
+border-radius:28px;
+cursor:pointer;
+transition:.3s;
+position:relative;
+}
+
+.card:hover{
+transform:translateY(-10px);
+border-color:#fff;
+}
+
+.kicker{
+font-size:12px;
+letter-spacing:2px;
+color:var(--accent);
+margin-bottom:18px;
+}
+
+.card h2{font-size:30px;margin-bottom:18px;}
+.card p{color:var(--muted);line-height:1.8;}
+
+.metric{
+margin-top:18px;
+display:flex;
+justify-content:space-between;
+font-weight:600;
+}
+.metric .value{color:var(--accent);}
+
+/* OVERLAY */
+.overlay{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.78);
+backdrop-filter:blur(10px);
+display:none;
+align-items:center;
+justify-content:center;
+z-index:999;
+}
+
+.sim{
+width:min(700px,92%);
+padding:40px;
+border-radius:30px;
+background:rgba(15,20,30,.95);
+border:1px solid rgba(255,255,255,.15);
+position:relative;
+}
+
+.sim-title{
+color:var(--accent);
+font-size:12px;
+letter-spacing:2px;
+margin-bottom:20px;
+}
+
+.close{
+position:absolute;
+top:15px;
+right:20px;
+cursor:pointer;
+font-size:18px;
+color:white;
+}
+
+.log{
+font-family:monospace;
+font-size:14px;
+margin:6px 0;
+opacity:0;
+animation:fade .3s forwards;
+}
+
+@keyframes fade{
+to{opacity:1;}
+}
+
+@media (max-width: 768px) {
+    h1 { font-size: 40px; }
+    .hero-box { padding: 40px 20px; }
+}
+
+/* ===== SIMULACIÓN 04 MUNDIAL CORPORATIVO ===== */
+
+.game-container{
+width:100%;
+}
+
+.mundial-card{
+
+width:100%;
+padding:25px;
+
+background:#101722;
+
+border-radius:28px;
+
+border:1px solid #2f4b66;
+
+color:white;
+
+}
+
+
+.mundial-small{
+
+color:#76d7ff;
+font-size:12px;
+letter-spacing:2px;
+margin-bottom:8px;
+
+}
+
+
+.mundial-sub{
+
+color:#8fa5b6;
+margin-bottom:20px;
+
+}
+
+
+.cancha{
+
+height:240px;
+
+border:2px solid #46d16d;
+
+border-radius:16px;
+
+position:relative;
+
+background:linear-gradient(#2f8b4c,#277742);
+
+overflow:hidden;
+
+margin-bottom:20px;
+
+}
+
+
+.cancha:before{
+
+content:"";
+
+position:absolute;
+
+left:50%;
+top:0;
+bottom:0;
+
+width:2px;
+
+background:white;
+
+opacity:.4;
+
+}
+
+
+.centro{
+
+position:absolute;
+
+left:50%;
+top:50%;
+
+width:70px;
+height:70px;
+
+margin-left:-35px;
+margin-top:-35px;
+
+border:2px solid rgba(255,255,255,.5);
+
+border-radius:50%;
+
+}
+
+
+.porteria{
+
+position:absolute;
+
+right:0;
+
+top:85px;
+
+width:18px;
+
+height:70px;
+
+border:2px solid white;
+
+border-right:none;
+
+}
+
+
+.balon{
+
+position:absolute;
+
+left:70px;
+
+top:108px;
+
+font-size:26px;
+
+transition:1.2s;
+
+}
+
+
+.balon.move{
+
+transform:rotate(720deg);
+
+}
+
+
+.mensaje{
+
+position:absolute;
+
+left:50%;
+
+top:45%;
+
+transform:translate(-50%,-50%) scale(.5);
+
+padding:18px 34px;
+
+border-radius:18px;
+
+font-size:30px;
+
+font-weight:bold;
+
+opacity:0;
+
+transition:.4s;
+
+pointer-events:none;
+
+backdrop-filter:blur(12px);
+
+background:rgba(0,0,0,.45);
+
+border:2px solid rgba(255,255,255,.15);
+
+text-align:center;
+
+}
+
+
+.mensaje.show{
+
+opacity:1;
+
+transform:translate(-50%,-50%) scale(1);
+
+}
+
+
+.gol{
+
+color:#84ff95;
+
+border-color:#69ff93;
+
+box-shadow:0 0 30px rgba(90,255,120,.45);
+
+}
+
+
+.auto{
+
+color:#ff9d9d;
+
+border-color:#ff5f5f;
+
+box-shadow:0 0 30px rgba(255,80,80,.45);
+
+}
+
+
+
+.explicacion{
+
+position:absolute;
+
+left:50%;
+
+top:62%;
+
+transform:translateX(-50%);
+
+font-size:13px;
+
+color:#d0d7e2;
+
+opacity:0;
+
+transition:.4s;
+
+text-align:center;
+
+width:80%;
+
+}
+
+
+.explicacion.show{
+
+opacity:1;
+
+}
+
+
+
+.selectores{
+
+display:flex;
+
+gap:10px;
+
+margin-bottom:18px;
+
+}
+
+
+
+.area-btn{
+
+flex:1;
+
+padding:12px;
+
+background:#1f3145;
+
+border:1px solid #4ca9ff;
+
+color:white;
+
+border-radius:12px;
+
+cursor:pointer;
+
+}
+
+
+
+.area-btn:hover{
+
+background:#29435f;
+
+}
+
+
+.info{
+
+display:flex;
+
+justify-content:space-between;
+
+margin-bottom:15px;
+
+color:#9fb3c5;
+
+}
+
+/* ===========================
+SIMULACIÓN POWER BI IMMERSIVA
+===========================*/
+
+.pb-card{
+position:relative;
+overflow:hidden;
+padding:28px;
+border-radius:28px;
+background:rgba(18,24,38,.92);
+border:1px solid rgba(255,255,255,.08);
+}
+
+.pb-card:before{
+content:"";
+position:absolute;
+top:-240px;
+left:-240px;
+width:500px;
+height:500px;
+background:
+conic-gradient(
+transparent,
+rgba(111,210,255,.35),
+transparent);
+animation:pbRotate 8s linear infinite;
+}
+
+.pb-card:after{
+content:"";
+position:absolute;
+inset:2px;
+border-radius:26px;
+background:#101722;
+}
+
+.pb-content{
+position:relative;
+z-index:5;
+}
+
+.pb-small{
+font-size:12px;
+letter-spacing:2px;
+color:#84d9ff;
+margin-bottom:8px;
+}
+
+.pb-title{
+font-size:32px;
+font-weight:bold;
+margin-bottom:5px;
+}
+
+.pb-sub{
+color:#8ea4b7;
+margin-bottom:22px;
+}
+
+.pb-score{
+font-size:64px;
+font-weight:bold;
+color:#7fd7ff;
+}
+
+.pb-bar{
+margin-top:16px;
+height:12px;
+border-radius:999px;
+background:#233448;
+overflow:hidden;
+}
+
+.pb-fill{
+height:100%;
+width:0%;
+background:linear-gradient(90deg,#53b8ff,#74ffd4);
+transition:1s;
+}
+
+.pb-radar {
+  margin: 15px auto; /* Reducido el margen vertical de 25px a 15px */
+  width: 110px;      /* Reducido de 170px */
+  height: 110px;     /* Reducido de 170px */
+  border-radius: 50%;
+  border: 1px solid rgba(127,210,255,.30);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.pb-radar:before {
+  content: "";
+  position: absolute;
+  width: 75px;       /* Reducido proporcionalmente de 115px */
+  height: 75px;      /* Reducido proporcionalmente de 115px */
+  border-radius: 50%;
+  border: 1px solid rgba(127,210,255,.25);
+}
+
+.pb-radar:after {
+  content: "";
+  position: absolute;
+  width: 40px;       /* Reducido proporcionalmente de 60px */
+  height: 40px;      /* Reducido proporcionalmente de 60px */
+  border-radius: 50%;
+  border: 1px solid rgba(127,210,255,.20);
+}
+
+.pb-scan {
+  position: absolute;
+  width: 2px;
+  height: 55px;      /* Reducido de 82px para que no sobresalga del nuevo radio */
+  background: #8edbff;
+  transform-origin: bottom;
+  animation: scan 2.6s linear infinite;
+  box-shadow: 0 0 15px #8edbff;
+}
+
+
+.pb-spark{
+
+margin-top:20px;
+
+display:flex;
+
+align-items:flex-end;
+
+height:75px;
+
+gap:6px;
+
+}
+
+.pb-spark div{
+
+flex:1;
+
+border-radius:8px 8px 0 0;
+
+background:linear-gradient(#90deff,#35a9ff);
+
+transition:.6s;
+
+}
+
+/* Alturas iniciales diferentes */
+
+.pb-spark div:nth-child(1){height:22%;}
+.pb-spark div:nth-child(2){height:48%;}
+.pb-spark div:nth-child(3){height:78%;}
+.pb-spark div:nth-child(4){height:38%;}
+.pb-spark div:nth-child(5){height:90%;}
+.pb-spark div:nth-child(6){height:60%;}
+.pb-spark div:nth-child(7){height:72%;}
+.pb-spark div:nth-child(8){height:30%;}
+
+
+.pb-status{
+
+margin-top:25px;
+
+padding:15px;
+
+border-radius:14px;
+
+background:rgba(255,255,255,.05);
+
+}
+
+.pb-footer{
+
+display:flex;
+
+justify-content:space-between;
+
+margin-top:20px;
+
+font-size:13px;
+
+color:#8ea4b7;
+
+}
+
+@keyframes pbRotate{
+100%{
+transform:rotate(360deg);
+}
+}
+
+@keyframes pbPulse{
+0%{height:20%;}
+50%{height:95%;}
+100%{height:35%;}
+}
+
+@keyframes scan{
+100%{
+transform:rotate(360deg);
+}
+}
+
+/*==================================================
+SIMULACIÓN 06 - CONTROL DE LEGALIDAD IA
+==================================================*/
+
+.legal-window{
+
+width:100%;
+height:600px;
+min-height:0;
+
+display:flex;
+flex-direction:column;
+
+overflow:hidden;
+
+}
+
+.legal-header{
+
+height:82px;
+flex-shrink:0;
+display:flex;
+
+align-items:center;
+
+padding:18px 24px;
+
+gap:18px;
+
+background:rgba(255,255,255,.03);
+
+border-bottom:1px solid rgba(255,255,255,.08);
+
+backdrop-filter:blur(14px);
+
+}
+
+.legal-avatar{
+
+width:54px;
+height:54px;
+
+border-radius:50%;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+font-size:24px;
+
+background:linear-gradient(135deg,#33b5ff,#6fe3ff);
+
+box-shadow:0 0 30px rgba(75,185,255,.35);
+
+flex-shrink:0;
+
+}
+
+.legal-head-info{
+
+flex:1;
+
+}
+
+.legal-head-info h2{
+
+font-size:20px;
+
+margin:0;
+
+}
+
+.legal-head-info p{
+
+margin-top:4px;
+
+color:#8ca4bb;
+
+font-size:13px;
+
+}
+
+.legal-status{
+
+display:flex;
+
+align-items:center;
+
+gap:8px;
+
+font-size:13px;
+
+color:#9fdfff;
+
+}
+
+.legal-dot{
+
+width:10px;
+height:10px;
+
+border-radius:50%;
+
+background:#46ff8a;
+
+animation:pulseOnline 1.4s infinite;
+
+}
+
+@keyframes pulseOnline{
+
+0%{
+
+transform:scale(1);
+
+opacity:1;
+
+}
+
+50%{
+
+transform:scale(1.35);
+
+opacity:.6;
+
+}
+
+100%{
+
+transform:scale(1);
+
+opacity:1;
+
+}
+
+}
+
+.legal-chat{
+
+flex:1;
+
+min-height:0;
+
+overflow-y:auto;
+
+padding:24px;
+
+display:flex;
+flex-direction:column;
+gap:18px;
+
+scroll-behavior:smooth;
+
+background:
+
+radial-gradient(circle at top right,
+rgba(60,180,255,.08),
+transparent 35%),
+
+linear-gradient(180deg,
+rgba(255,255,255,.02),
+rgba(255,255,255,.01));
+
+}
+
+.bot-message{
+
+align-self:flex-start;
+
+max-width:78%;
+
+padding:16px 18px;
+
+border-radius:18px 18px 18px 6px;
+
+background:rgba(255,255,255,.06);
+
+border:1px solid rgba(255,255,255,.06);
+
+line-height:1.65;
+
+animation:fadeUp .35s;
+
+}
+
+.user-message{
+
+align-self:flex-end;
+
+max-width:78%;
+
+padding:16px 18px;
+
+border-radius:18px 18px 6px 18px;
+
+background:linear-gradient(135deg,#1b8cff,#39c8ff);
+
+color:white;
+
+line-height:1.65;
+
+animation:fadeUp .35s;
+
+}
+
+.msg-title{
+
+font-size:12px;
+
+font-weight:700;
+
+letter-spacing:1px;
+
+color:#84dcff;
+
+margin-bottom:10px;
+
+text-transform:uppercase;
+
+}
+
+.legal-footer{
+
+padding:24px;
+flex-shrink:0;
+
+display:flex;
+
+flex-direction:column;
+
+align-items:center;
+
+gap:12px;
+
+border-top:1px solid rgba(255,255,255,.08);
+
+background:rgba(255,255,255,.03);
+
+}
+
+.legalMic{
+
+width:82px;
+
+height:82px;
+
+border-radius:50%;
+
+border:none;
+
+cursor:pointer;
+
+font-size:34px;
+
+color:white;
+
+background:linear-gradient(135deg,#2da9ff,#6fe3ff);
+
+box-shadow:0 0 35px rgba(66,180,255,.35);
+
+transition:.3s;
+
+}
+
+.legalMic:hover{
+
+transform:scale(1.08);
+
+}
+
+.legalMic.listening{
+
+animation:micPulse .9s infinite;
+
+}
+
+@keyframes micPulse{
+
+0%{
+
+transform:scale(1);
+
+box-shadow:0 0 0 rgba(77,185,255,.5);
+
+}
+
+50%{
+
+transform:scale(1.12);
+
+box-shadow:0 0 35px rgba(77,185,255,.75);
+
+}
+
+100%{
+
+transform:scale(1);
+
+box-shadow:0 0 0 rgba(77,185,255,.5);
+
+}
+
+}
+
+.legalState{
+
+font-size:14px;
+
+color:#9db5ca;
+
+}
+
+.typing{
+
+display:flex;
+
+gap:6px;
+
+align-items:center;
+
+}
+
+.typing span{
+
+width:8px;
+
+height:8px;
+
+border-radius:50%;
+
+background:#84dcff;
+
+animation:typing .9s infinite;
+
+}
+
+.typing span:nth-child(2){
+
+animation-delay:.2s;
+
+}
+
+.typing span:nth-child(3){
+
+animation-delay:.4s;
+
+}
+
+@keyframes typing{
+
+0%,80%,100%{
+
+transform:translateY(0);
+
+opacity:.4;
+
+}
+
+40%{
+
+transform:translateY(-6px);
+
+opacity:1;
+
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+
+<section class="hero">
+<div class="hero-box">
+
+<div class="badge">PORTAFOLIO INTERACTIVO</div>
+
+<h1>
+<span class="typed" id="typing"></span>
+<span class="static">Esteban Salinas</span>
+</h1>
+
+<div class="sub">
+Construyo soluciones desde datos, automatización y experiencia operativa.
+</div>
+
+<div class="flow">
+<span>SQL</span>
+<span>Databricks</span>
+<span>Power Automate</span>
+<span>Python RPA</span>
+</div>
+
+<a class="cta" onclick="mostrarSeccion()">Explorar simulaciones</a>
+</div>
+</section>
+
+<section id="casos">
+<div class="grid">
+<div class="card" onclick="run('data')">
+<div class="kicker">SIMULACIÓN 01</div>
+<h2>Calidad de información</h2>
+<p>SQL + Databricks + modelo Levenshtein</p>
+<div class="metric">
+<div>Consistency</div>
+<div class="value">94%</div>
+</div>
+</div>
+
+<div class="card" onclick="run('flow')">
+<div class="kicker">SIMULACIÓN 02</div>
+<h2>Experiencia operativa</h2>
+<p>Power Automate + Teams + notificaciones</p>
+<div class="metric">
+<div>Time Saved</div>
+<div class="value">42%</div>
+</div>
+</div>
+
+<div class="card" onclick="run('rpa')">
+<div class="kicker">SIMULACIÓN 03</div>
+<h2>Automatización aplicada</h2>
+<p>Python RPA + análisis de datos</p>
+<div class="metric">
+<div>Efficiency</div>
+<div class="value">55%</div>
+</div>
+</div>
+
+<div class="card" onclick="run('mundial')">
+<div class="kicker">SIMULACIÓN 04</div>
+
+<h2>Mundial Corporativo</h2>
+
+<p>Simulador de desempeño por áreas</p>
+
+<div class="metric">
+<div>Performance</div>
+<div class="value">LIVE</div>
+</div>
+
+</div>
+
+<div class="card" onclick="run('powerbi')">
+
+<div class="kicker">SIMULACIÓN 05</div>
+
+<h2>Analítica y Reportería</h2>
+
+<p>Power BI + KPIs + Dashboard Ejecutivo</p>
+
+<div class="metric">
+<div>Insights</div>
+<div class="value">LIVE</div>
+</div>
+
+</div>
+
+<div class="card" onclick="run('legal')">
+
+<div class="kicker">SIMULACIÓN 06</div>
+
+<h2>Control de Legalidad</h2>
+
+<p>IA + Reconocimiento de Voz + Validación Registral</p>
+
+<div class="metric">
+<div>AI Assistant</div>
+<div class="value">LIVE</div>
+</div>
+
+</div>
+
+</div>
+</section>
+
+<div class="overlay" id="overlay" onclick="closeSim(event)">
+<div class="sim">
+<div class="close" onclick="closeSim(event)">✕</div>
+<div class="sim-title" id="title"></div>
+<div id="log"></div>
+</div>
+</div>
+
+<script>
+/* Forzar inicio al tope */
+window.history.scrollRestoration = 'manual';
+window.scrollTo(0, 0);
+
+/* Mostrar sección casos */
+function mostrarSeccion() {
+    const s = document.getElementById('casos');
+    s.style.display = 'block';
+    s.scrollIntoView({ behavior: 'smooth' });
+}
+
+/* typing */
+const phrases=["Construyo soluciones desde datos", "Automatizo procesos reales", "Transformo operación en sistemas", "Optimizo experiencia operativa"];
+let i=0;
+const typingEl = document.getElementById("typing");
+setInterval(()=>{
+    typingEl.innerText=phrases[i];
+    i=(i+1)%phrases.length;
+},4000);
+typingEl.innerText = phrases[0];
+
+/* mouse light */
+document.addEventListener("mousemove",e=>{
+    document.body.style.setProperty("--x",e.clientX+"px");
+    document.body.style.setProperty("--y",e.clientY+"px");
+});
+
+function addLog(text){
+    const el=document.createElement("div"); el.className="log";
+    let icon="•";
+    if(text.includes("SQL")) icon="🗄️";
+    if(text.includes("Databricks")) icon="🧠";
+    if(text.includes("Power")) icon="⚡";
+    if(text.includes("Python")) icon="🐍";
+    if(text.includes("✔")) icon="✔";
+    el.innerText=`${icon} ${text}`;
+    document.getElementById("log").appendChild(el);
+}
+
+function addBlock(k,v){
+    const el=document.createElement("div");
+    el.style.cssText=`display:flex;justify-content:space-between;padding:10px 14px;margin:6px 0;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);font-family:Segoe UI;font-size:13px;`;
+    el.innerHTML=`<span>${k}</span><span style="color:#9fd9ff;font-weight:600">${v}</span>`;
+    document.getElementById("log").appendChild(el);
+}
+
+
+async function run(type){
+
+const overlay=document.getElementById("overlay");
+const title=document.getElementById("title");
+const log=document.getElementById("log");
+
+overlay.style.display="flex";
+log.innerHTML="";
+
+const wait=(ms)=>new Promise(r=>setTimeout(r,ms));
+
+if(type==="data"){
+
+title.innerText="🧠 DATABRICKS • SQL + LEVENSHTEIN";
+
+addLog("[Databricks] Cluster inicializado...");
+await wait(500);
+
+addLog("[SQL] Consultando registros...");
+await wait(500);
+
+addLog("[Levenshtein] Analizando variaciones...");
+await wait(700);
+
+addBlock("Calle 50 #30-23","vs CLL 50 No 30 23");
+await wait(500);
+
+addBlock("Similarity Score","97.8%");
+await wait(500);
+
+addBlock("Data Quality","94.2% ✔");
+
+}
+
+if(type==="flow"){
+
+title.innerText="⚡ POWER AUTOMATE • TEAMS FLOW";
+
+addLog("[Power Automate] Trigger recibido...");
+await wait(500);
+
+addLog("[Validation] OK ✔");
+await wait(500);
+
+addLog("[Teams] Enviando tarjeta...");
+await wait(700);
+
+addBlock("Canal","Operations");
+
+addBlock("Estado","Enviado ✔");
+
+addBlock("Impacto","-42% tiempo");
+
+}
+
+if(type==="rpa"){
+
+title.innerText="🐍 PYTHON RPA • AUTOMATION";
+
+addLog("[Python] Script iniciado...");
+await wait(500);
+
+addLog("[RPA] Accediendo ERP...");
+await wait(600);
+
+addLog("[Pandas] Procesando datos...");
+await wait(700);
+
+addBlock("Registros","1,284");
+
+addBlock("Workflows","3");
+
+addBlock("Tiempo","18.3s");
+
+addLog("✔ Automatización completada");
+
+}
+
+
+/* ===== NUEVA SIMULACIÓN MUNDIAL ===== */
+
+if(type==="mundial"){
+
+
+title.innerText="🏆 MUNDIAL CORPORATIVO";
+
+
+log.innerHTML=`
+
+<div class="mundial-card">
+
+
+<div class="mundial-small">
+
+MUNDIAL CORPORATIVO
+
+</div>
+
+
+<h2>
+Competencia de Innovación
+</h2>
+
+
+<div class="mundial-sub">
+
+Gerente = Árbitro | Esteban = VAR Inteligente
+
+</div>
+
+
+
+<div class="cancha">
+
+
+<div class="centro"></div>
+
+<div class="porteria"></div>
+
+
+<div class="balon" id="balon">
+
+⚽
+
+</div>
+
+
+<div class="mensaje" id="mensaje"></div>
+
+
+<div class="explicacion" id="explicacion"></div>
+
+
+</div>
+
+
+
+
+<div class="selectores">
+
+
+<button class="area-btn"
+onclick="equipo('🇨🇴 Energía')">
+
+🇨🇴 Energía
+
+</button>
+
+
+
+<button class="area-btn"
+onclick="equipo('🇧🇷 Hábitat')">
+
+🇧🇷 Hábitat
+
+</button>
+
+
+</div>
+
+
+
+<div class="info">
+
+<div id="team">
+
+Seleccione un equipo
+
+</div>
+
+
+<div id="score">
+
+Pts: 0
+
+</div>
+
+
+</div>
+
+
+
+<button class="area-btn"
+onclick="patear()">
+
+⚽ Ejecutar estrategia
+
+</button>
+
+
+</div>
+
+
+`;
+
+}
+
+/* ===== POWER BI ===== */
+
+if(type==="powerbi"){
+
+title.innerText="📊 ANALÍTICA Y REPORTERÍA";
+
+log.innerHTML=`
+
+<div class="pb-card">
+
+<div class="pb-content">
+
+<div class="pb-small">
+
+POWER BI LIVE SIMULATION
+
+</div>
+
+<div class="pb-title">
+
+Indicador Operativo
+
+</div>
+
+<div class="pb-sub">
+
+Monitoreando procesos en tiempo real...
+
+</div>
+
+<div class="pb-score" id="pbScore">
+
+87%
+
+</div>
+
+<div class="pb-bar">
+
+<div class="pb-fill" id="pbFill"></div>
+
+</div>
+
+<div class="pb-radar">
+
+<div class="pb-scan"></div>
+
+</div>
+
+<div class="pb-spark">
+
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+
+</div>
+
+<div class="pb-status" id="pbStatus">
+
+Inicializando modelo predictivo...
+
+</div>
+
+<div class="pb-footer">
+
+<span id="pbMotor">
+
+Databricks
+
+</span>
+
+<span id="pbHora">
+
+--
+
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+powerBIAnimation();
+
+}
+
+
+if(type=="legal"){
+
+title.innerHTML="⚖️ CONTROL DE LEGALIDAD IA";
+
+log.innerHTML=`
+
+<div class="legal-window">
+
+<div class="legal-header">
+
+<div class="legal-avatar">
+
+🤖
+
+</div>
+
+<div class="legal-head-info">
+
+<h2>Soy Regi </h2>
+
+<p>Intelligence Register</p>
+
+</div>
+
+<div class="legal-status">
+
+<span class="legal-dot"></span>
+
+En línea
+
+</div>
+
+</div>
+
+
+
+<div
+class="legal-chat"
+id="legalChat">
+
+<div class="bot-message">
+
+<div class="msg-title">
+
+🤖 RegI
+
+</div>
+
+Hola 👋🏻
+
+<br><br>
+
+Dime como puedo ayudarte,
+<b>Ej: Quiero el control de legalidad para (tú trámite):</b>
+<br>
+
+o
+<br>
+<b>Dame el control para un nombramiento</b>
+
+</div>
+
+</div>
+
+
+
+<div class="legal-footer">
+
+<button
+id="legalMic"
+class="legalMic">
+
+🎙️
+
+</button>
+
+<div
+id="legalState"
+class="legalState">
+
+Pulsa el micrófono para hablar
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+initLegal();
+
+}
+
+
+}
+
+
+/* ===== LÓGICA ORIGINAL DEL MUNDIAL ===== */
+
+let puntos=0;
+
+
+function equipo(nombre){
+
+document.getElementById("team").innerHTML=nombre;
+
+document.getElementById("balon").style.left="70px";
+
+document.getElementById("balon").classList.remove("move");
+
+document.getElementById("mensaje").className="mensaje";
+
+document.getElementById("explicacion").className="explicacion";
+
+}
+
+
+
+function patear(){
+
+
+const balon=document.getElementById("balon");
+
+const mensaje=document.getElementById("mensaje");
+
+const explicacion=document.getElementById("explicacion");
+
+
+mensaje.className="mensaje";
+
+explicacion.className="explicacion";
+
+
+balon.style.left="540px";
+
+balon.classList.add("move");
+
+
+
+setTimeout(()=>{
+
+
+if(Math.random()>0.35){
+
+
+puntos+=3;
+
+
+mensaje.innerHTML="⚽ GOOOOL";
+
+mensaje.className="mensaje gol show";
+vibrarGol();
+
+
+explicacion.innerHTML=
+"Ejecución correcta: estrategia alineada con los indicadores operativos.";
+
+
+explicacion.className="explicacion show";
+
+
+}else{
+
+
+mensaje.innerHTML="🚫 AUTOGOL";
+mensaje.className="mensaje auto show";
+vibrarAutogol();
+
+
+explicacion.innerHTML=
+"Fallo en validación: se detectaron inconsistencias en la ejecución del proceso.";
+
+
+explicacion.className="explicacion show";
+
+
+}
+
+
+
+document.getElementById("score").innerHTML=
+"Pts: "+puntos;
+
+
+
+setTimeout(()=>{
+
+
+balon.style.left="70px";
+
+balon.classList.remove("move");
+
+
+mensaje.className="mensaje";
+
+explicacion.className="explicacion";
+
+
+},2000);
+
+
+
+},1200);
+
+
+}
+
+let pbInterval;
+
+function powerBIAnimation(){
+
+clearInterval(pbInterval);
+
+const estados=[
+
+"Consultando SQL Server...",
+
+"Ejecutando modelo predictivo...",
+
+"Analizando comportamiento histórico...",
+
+"Calculando KPI...",
+
+"Evaluando desviaciones...",
+
+"Actualizando Dashboard...",
+
+"Generando Insights...",
+
+"Modelo validado ✔"
+
+];
+
+const motores=[
+
+"SQL",
+
+"Databricks",
+
+"Power BI",
+
+"Python",
+
+"Machine Learning"
+
+];
+
+let i=0;
+
+pbInterval=setInterval(()=>{
+
+const valor=Math.floor(Math.random()*18)+82;
+
+document.getElementById("pbScore").innerHTML=valor+"%";
+
+document.getElementById("pbFill").style.width=valor+"%";
+
+document.getElementById("pbStatus").innerHTML=estados[i%estados.length];
+
+document.getElementById("pbMotor").innerHTML=motores[i%motores.length];
+
+document.getElementById("pbHora").innerHTML=
+new Date().toLocaleTimeString();
+
+const barras=document.querySelectorAll(".pb-spark div");
+
+barras.forEach(barra=>{
+
+barra.style.height=(20+Math.random()*75)+"%";
+
+});
+
+i++;
+
+},1800);
+
+}
+
+
+function vibrarGol(){
+
+if(navigator.vibrate){
+
+navigator.vibrate([80,40,120]);
+
+}
+
+}
+
+
+
+function vibrarAutogol(){
+
+if(navigator.vibrate){
+
+navigator.vibrate([200,100,200,100,300]);
+
+}
+
+}
+
+/*==================================================
+SIMULACIÓN 06
+CONTROL DE LEGALIDAD IA
+==================================================*/
+
+let legalVoice;
+let legalRecognition = null;
+
+function initLegal(){
+    const chat = document.getElementById("legalChat");
+    const estado = document.getElementById("legalState");
+    const mic = document.getElementById("legalMic");
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    
+    if(!SpeechRecognition){
+        estado.innerHTML = "❌ Este navegador no soporta reconocimiento de voz.";
+        mic.disabled = true;
+        return;
+    }
+
+    if(!legalRecognition){
+        legalRecognition = new SpeechRecognition();
+        legalRecognition.lang = "es-CO";
+        legalRecognition.continuous = false;
+        legalRecognition.interimResults = false;
+        legalRecognition.maxAlternatives = 1;
+    }
+
+    mic.onclick = () => {
+        speechSynthesis.cancel();
+        
+        // 🔥 HACK PARA SAFARI / EMULADORES: Desbloquear el motor de voz mediante interacción física activa
+        const activador = new SpeechSynthesisUtterance("");
+        speechSynthesis.speak(activador);
+
+        estado.innerHTML = "🎙️ Escuchando...";
+        mic.classList.add("listening");
+
+        try {
+            legalRecognition.start();
+        } catch(e) {
+            console.log("Reconocimiento ya activo");
+        }
+    };
+
+    legalRecognition.onresult = (e) => {
+        const texto = e.results[0][0].transcript.toLowerCase();
+
+        // 🛠️ CORRECCIÓN: Usamos createElement + appendChild para proteger los eventos del DOM
+        const userDiv = document.createElement("div");
+        userDiv.className = "user-message";
+        userDiv.innerHTML = `<div class="msg-title">👤 TÚ</div>${texto}`;
+        chat.appendChild(userDiv);
+
+        chat.scrollTop = chat.scrollHeight;
+        escribiendo(texto);
+    };
+
+    legalRecognition.onerror = (e) => {
+        estado.innerHTML = "❌ Error: " + e.error;
+        mic.classList.remove("listening");
+    };
+
+    legalRecognition.onend = () => {
+        mic.classList.remove("listening");
+        if(estado.innerHTML === "🎙️ Escuchando..."){
+            estado.innerHTML = "No escuché ninguna respuesta.";
+        }
+    };
+}
+
+function escribiendo(texto){
+    const chat = document.getElementById("legalChat");
+    const estado = document.getElementById("legalState");
+
+    estado.innerHTML = "🤖 Analizando consulta...";
+
+    const typing = document.createElement("div");
+    typing.className = "bot-message";
+    typing.id = "typingBubble";
+    typing.innerHTML = `
+        <div class="msg-title">🤖 IA REGISTRAL</div>
+        <div class="typing">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    `;
+
+    chat.appendChild(typing);
+    chat.scrollTop = chat.scrollHeight;
+
+    setTimeout(() => {
+        typing.remove();
+        respuestaLegal(texto);
+    }, 1400);
+}
+
+function respuestaLegal(texto){
+    const chat = document.getElementById("legalChat");
+    const estado = document.getElementById("legalState");
+
+    let respuesta = "No encontré ese trámite.";
+    
+    if(texto.includes("constitución") || texto.includes("constitucion")){
+        respuesta = `
+        Por supuesto.<br><br>
+        Según la Superintendencia los controles de legalidad para <b>Constitución</b> son:
+        <br><br>
+        ✅ Control de homonimia<br>
+        ✅ Objeto social<br>
+        ✅ Capitales<br>
+        ✅ Firma del representante legal
+        `;
+    }
+    else if(texto.includes("nombramiento")){
+        respuesta = `
+        Claro.<br><br>
+        Los controles de legalidad para <b>Nombramiento</b> son:
+        <br><br>
+        ✅ Órgano competente<br>
+        ✅ Cumple quórum<br>
+        ✅ Cumple convocatoria<br>
+        ✅ Cumple SIPREF
+        `;
+    }
+
+    // 🛠️ CORRECCIÓN: Agregamos la respuesta del Bot de forma segura con appendChild
+    const botDiv = document.createElement("div");
+    botDiv.className = "bot-message";
+    botDiv.innerHTML = `<div class="msg-title">🤖 IA REGISTRAL</div>${respuesta}`;
+    chat.appendChild(botDiv);
+
+    chat.scrollTop = chat.scrollHeight;
+
+    speechSynthesis.cancel();
+
+    // Limpieza regular nativa para compatibilidad total de audio
+    const textoVoz = respuesta.replace(/<[^>]*>/g," ");
+
+    legalVoice = new SpeechSynthesisUtterance(textoVoz);
+    legalVoice.lang = "es-CO";
+    legalVoice.rate = 1;
+    legalVoice.pitch = 1;
+    
+    console.log(textoVoz);
+    speechSynthesis.speak(legalVoice);
+    estado.innerHTML = "✅ Consulta finalizada";
+}
+
+// 🛠️ REPARACIÓN DE CIERRE GLOBAL DEL MODAL: Apaga intervalos activos y cierra limpiamente
+function closeSim(e){
+    if(e.target.id === "overlay" || e.target.classList.contains("close")){
+        clearInterval(pbInterval); // Detiene con seguridad el motor de Power BI
+        speechSynthesis.cancel();  // Detiene la voz de la IA si el usuario cierra el chat de golpe
+        document.getElementById("overlay").style.display = "none";
+    }
+}
+
+
+
+</script>
+</body>
+</html>
