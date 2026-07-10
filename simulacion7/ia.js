@@ -1,63 +1,83 @@
-function procesarConsulta(texto){
+function analizarSolicitud(texto){
 
-    texto = texto.toLowerCase();
+texto=texto.toLowerCase();
 
-    agregarUsuario(texto);
 
-    escribir("🧠 Analizando solicitud...");
+if(texto.includes("comerciante")){
 
-    setTimeout(()=>{
+return "comerciantes";
 
-        if(texto.includes("comerciante")){
+}
 
-            escribir("📂 Generando base de comerciantes...");
 
-            mostrarDataset("comerciantes");
+if(texto.includes("venta")){
 
-            return;
+return "ventas";
 
-        }
+}
 
-        if(texto.includes("ventas")){
 
-            escribir("📂 Generando base de ventas...");
+if(texto.includes("matricula") || texto.includes("matrícula")){
 
-            mostrarDataset("ventas");
+return "matriculas";
 
-            return;
+}
 
-        }
 
-        if(
-            texto.includes("reporte") ||
-            texto.includes("dashboard") ||
-            texto.includes("power bi")
-        ){
+return null;
 
-            escribir("📊 Construyendo dashboard ejecutivo...");
+}
 
-            generarDashboard();
 
-            return;
 
-        }
+function ejecutarIA(texto){
 
-        if(
-            texto.includes("pdf")
-        ){
+const base = analizarSolicitud(texto);
 
-            escribir("📄 Generando PDF ejecutivo...");
 
-            generarPDF();
+if(!base){
 
-            return;
+agregarBot(
+"🤖 No identifiqué la fuente de datos solicitada."
+);
 
-        }
+return;
 
-        agregarBot("No entendí la solicitud. Puedes pedirme una base de datos, un dashboard o un PDF.");
+}
 
-        escribir("Sistema listo.");
 
-    },900);
+const datos=basesDatos[base];
+
+
+agregarBot(
+
+`
+🧠 Analizando solicitud...
+
+<br><br>
+
+📂 Fuente:
+<b>${datos.nombre}</b>
+
+<br><br>
+
+📊 Registros procesados:
+<b>${datos.datos.length}</b>
+
+<br><br>
+
+⚙️ Construyendo modelo analítico...
+
+`
+
+);
+
+
+mostrarTabla(datos);
+
+crearDashboard(datos);
+
+generarResumen(datos);
+
 
 }
