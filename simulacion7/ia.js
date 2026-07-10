@@ -68,21 +68,24 @@ function ejecutarIA(texto) {
         </div>
     `);
 
-    setTimeout(() => {
+    setTimeout(()=>{
 
-    agregarBot("✅ Procesamiento terminado. Ejecutando módulos...");
+    agregarBot("🟢 Paso 1: enviando datos a tabla");
 
-    console.log("Paso tabla");
+    mostrarTabla(datos);
 
-mostrarTabla(datos);
 
-console.log("Paso dashboard");
+    agregarBot("🟢 Paso 2: creando dashboard");
 
-crearDashboard(datos);
+    crearDashboard(datos);
 
-console.log("Paso resumen");
 
-generarResumen(datos);
+    agregarBot("🟢 Paso 3: generando resumen");
 
-    }, 1800);
+    generarResumen(datos);
+
+
+    agregarBot("🟢 Todos los módulos terminaron");
+
+    },1800);
 }
