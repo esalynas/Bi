@@ -1,3 +1,73 @@
+function mostrarTabla(datos){
+
+const tabla=document.getElementById("tabla");
+
+if(!tabla){
+    return;
+}
+
+
+let html=`
+
+<table class="data-table">
+
+<thead>
+
+<tr>
+`;
+
+
+Object.keys(datos.datos[0]).forEach(campo=>{
+
+html+=`
+<th>${campo}</th>
+`;
+
+});
+
+
+html+=`
+
+</tr>
+
+</thead>
+
+<tbody>
+`;
+
+
+datos.datos.forEach(fila=>{
+
+html+="<tr>";
+
+Object.values(fila).forEach(valor=>{
+
+html+=`
+<td>${valor}</td>
+`;
+
+});
+
+html+="</tr>";
+
+});
+
+
+html+=`
+
+</tbody>
+
+</table>
+
+`;
+
+
+tabla.innerHTML=html;
+
+}
+
+
+
 function crearDashboard(datos){
 alert("Llegó al Dashboard");
 const dashboard = document.getElementById("dashboard");
