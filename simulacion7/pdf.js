@@ -178,9 +178,83 @@ escribir("Informe listo.");
 
 function descargarPDF(){
 
+const { jsPDF } = window.jspdf;
 
-alert(
-"Simulación: PDF ejecutivo generado correctamente."
+const doc = new jsPDF();
+
+
+doc.setFontSize(18);
+
+doc.text(
+"Regi Analytics AI",
+20,
+25
+);
+
+
+doc.setFontSize(14);
+
+doc.text(
+"Informe Ejecutivo Analítico",
+20,
+40
+);
+
+
+doc.setFontSize(11);
+
+
+doc.text(
+"Fuente analizada: " + datasetActual.titulo,
+20,
+60
+);
+
+
+doc.text(
+"Registros procesados: " + datasetActual.datos.length,
+20,
+75
+);
+
+
+doc.text(
+"Análisis generado mediante IA Analytics",
+20,
+90
+);
+
+
+
+doc.text(
+"Conclusión:",
+20,
+115
+);
+
+
+doc.text(
+"La información fue procesada identificando patrones,",
+20,
+130
+);
+
+
+doc.text(
+"distribuciones y variables relevantes para la toma de decisiones.",
+20,
+145
+);
+
+
+
+doc.save(
+"Informe_Regi_Analytics_AI.pdf"
+);
+
+
+agregarBot(
+"📄 PDF ejecutivo descargado correctamente."
 );
 
 
