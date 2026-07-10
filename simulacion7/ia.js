@@ -30,12 +30,28 @@ return null;
 
 
 
+
 function ejecutarIA(texto){
 
 const base = analizarSolicitud(texto);
 
 
+
 if(!base){
+
+agregarBot(
+"🤖 No identifiqué la fuente de datos solicitada."
+);
+
+return;
+
+}
+
+
+
+const datos=basesDatos[base];
+
+
 
 agregarBot(
 
@@ -64,6 +80,7 @@ Solicitud recibida:
 
 <br><br>
 
+
 🧩 Campos analizados:
 
 <br>
@@ -71,6 +88,7 @@ Solicitud recibida:
 ${Object.keys(datos.datos[0])
 .map(c=>"✓ "+c+"<br>")
 .join("")}
+
 
 <br>
 
@@ -80,11 +98,13 @@ ${Object.keys(datos.datos[0])
 
 <b>${datos.datos.length.toLocaleString()}</b>
 
+
 <br><br>
 
 ⚙️ Construyendo modelo analítico...
 
 <br><br>
+
 
 <div class="typing">
 
@@ -99,11 +119,19 @@ ${Object.keys(datos.datos[0])
 );
 
 
+
+setTimeout(()=>{
+
+
 mostrarTabla(datos);
 
 crearDashboard(datos);
 
 generarResumen(datos);
+
+
+},1800);
+
 
 
 }
