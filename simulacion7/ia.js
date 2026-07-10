@@ -111,3 +111,4 @@ crearDashboard(datos);
 generarResumen(datos);
 
 },1800);
+}
