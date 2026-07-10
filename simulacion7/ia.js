@@ -38,35 +38,61 @@ const base = analizarSolicitud(texto);
 if(!base){
 
 agregarBot(
-"🤖 No identifiqué la fuente de datos solicitada."
-);
-
-return;
-
-}
-
-
-const datos=basesDatos[base];
-
-
-agregarBot(
 
 `
-🧠 Analizando solicitud...
+🧠 Regi Analytics AI
 
 <br><br>
 
-📂 Fuente:
+Solicitud recibida:
+
+<br>
+
+<b>${texto}</b>
+
+<br><br>
+
+━━━━━━━━━━━━━━
+
+<br>
+
+📂 Fuente identificada:
+
+<br>
+
 <b>${datos.nombre}</b>
 
 <br><br>
 
+🧩 Campos analizados:
+
+<br>
+
+${Object.keys(datos.datos[0])
+.map(c=>"✓ "+c+"<br>")
+.join("")}
+
+<br>
+
 📊 Registros procesados:
-<b>${datos.datos.length}</b>
+
+<br>
+
+<b>${datos.datos.length.toLocaleString()}</b>
 
 <br><br>
 
 ⚙️ Construyendo modelo analítico...
+
+<br><br>
+
+<div class="typing">
+
+<span></span>
+<span></span>
+<span></span>
+
+</div>
 
 `
 
