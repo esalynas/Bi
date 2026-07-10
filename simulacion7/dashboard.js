@@ -1,5 +1,5 @@
 function crearDashboard(datos){
-
+alert("Llegó al Dashboard");
 const dashboard = document.getElementById("dashboard");
 
 if(!dashboard){
