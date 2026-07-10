@@ -1,4 +1,4 @@
-function analizarSolicitud(texto){
+ function analizarSolicitud(texto){
 
 texto=texto.toLowerCase();
 
@@ -31,61 +31,33 @@ const base = analizarSolicitud(texto);
 if(!base){
 
 agregarBot(
+"🤖 No identifiqué la fuente de datos solicitada."
+);
+
+return;
+
+}
+
+const datos=basesDatos[base];
+
+agregarBot(
 
 `
-🧠 Regi Analytics AI
+🧠 Analizando solicitud...
 
 <br><br>
 
-Solicitud recibida:
-
-<br>
-
-<b>${texto}</b>
-
-<br><br>
-
-━━━━━━━━━━━━━━
-
-<br>
-
-📂 Fuente identificada:
-
-<br>
-
+📂 Fuente:
 <b>${datos.nombre}</b>
 
 <br><br>
 
-🧩 Campos analizados:
-
-<br>
-
-${Object.keys(datos.datos[0])
-.map(c=>"✓ "+c+"<br>")
-.join("")}
-
-<br>
-
 📊 Registros procesados:
-
-<br>
-
-<b>${datos.datos.length.toLocaleString()}</b>
+<b>${datos.datos.length}</b>
 
 <br><br>
 
 ⚙️ Construyendo modelo analítico...
-
-<br><br>
-
-<div class="typing">
-
-<span></span>
-<span></span>
-<span></span>
-
-</div>
 
 `
 
@@ -96,4 +68,5 @@ mostrarTabla(datos);
 crearDashboard(datos);
 
 generarResumen(datos);
+
 }
