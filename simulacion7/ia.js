@@ -1,116 +1,76 @@
- function analizarSolicitud(texto){
-
-texto=texto.toLowerCase();
-
-if(texto.includes("comerciante")){
-
-return "comerciantes";
-
+function normalizarTexto(texto) {
+    return texto
+        .toLowerCase()
+        .normalize("NFD")           // Descompone acentos
+        .replace(/[\u0300-\u036f]/g, ""); // Elimina marcas diacríticas
 }
 
-if(texto.includes("venta")){
+function analizarSolicitud(texto) {
+    const t = normalizarTexto(texto);
 
-return "ventas";
+    if (t.includes("comerciante") || t.includes("comercio")) {
+        return "comerciantes";
+    }
+    if (t.includes("venta") || t.includes("vender")) {
+        return "ventas";
+    }
+    if (t.includes("matricula") || t.includes("matrícula")) {
+        return "matriculas";
+    }
 
+    return null;
 }
 
-if(texto.includes("matricula") || texto.includes("matrícula")){
+function ejecutarIA(texto) {
+    const base = analizarSolicitud(texto);
 
-return "matriculas";
+    if (!base) {
+        agregarBot("🤖 No identifiqué la fuente de datos solicitada.");
+        return;
+    }
 
-}
+    const datos = basesDatos[base];
 
-return null;
+    if (!datos || !Array.isArray(datos.datos)) {
+        agregarBot("❌ Error: Datos no disponibles para esta fuente.");
+        return;
+    }
 
-}
+    agregarBot(`
+        🧠 <b>Regi Analytics AI</b>
 
-function ejecutarIA(texto){
+        <br><br>
+        Solicitud recibida:<br>
+        <b>${texto}</b>
 
-const base = analizarSolicitud(texto);
+        <br><br>
+        ━━━━━━━━━━━━━━
 
-if(!base){
+        <br>
+        📂 Fuente identificada:<br>
+        <b>${datos.nombre}</b>
 
-agregarBot(
-"🤖 No identifiqué la fuente de datos solicitada."
-);
+        <br><br>
+        🧩 Campos detectados:<br>
+        ${Object.keys(datos.datos[0] || {})
+            .map(c => `✓ ${c}<br>`)
+            .join("")}
 
-return;
+        <br>
+        📊 Registros procesados:<br>
+        <b>${datos.datos.length.toLocaleString()}</b>
 
-}
+        <br><br>
+        ⚙️ Construyendo modelo analítico...
+        <br><br>
+        <div class="typing">
+            <span></span><span></span><span></span>
+        </div>
+    `);
 
-const datos=basesDatos[base];
-
-agregarBot(
-
-`
-🧠 Regi Analytics AI
-
-<br><br>
-
-Solicitud recibida:
-
-<br>
-
-<b>${texto}</b>
-
-<br><br>
-
-━━━━━━━━━━━━━━
-
-<br>
-
-📂 Fuente identificada:
-
-<br>
-
-<b>${datos.nombre}</b>
-
-<br><br>
-
-🧩 Campos detectados:
-
-<br>
-
-${Object.keys(datos.datos[0])
-.map(c=>"✓ "+c+"<br>")
-.join("")}
-
-<br>
-
-📊 Registros procesados:
-
-<br>
-
-<b>${datos.datos.length.toLocaleString()}</b>
-
-<br><br>
-
-⚙️ Construyendo modelo analítico...
-
-<br><br>
-
-<div class="typing">
-
-<span></span>
-<span></span>
-<span></span>
-
-</div>
-
-`
-
-);
-
-
-setTimeout(()=>{
-
-mostrarTabla(datos);
-
-crearDashboard(datos);
-
-generarResumen(datos);
-
-},1800);
-
-
+    setTimeout(() => {
+        mostrarTabla(datos);
+        crearDashboard(datos);
+        generarResumen(datos);
+    }, 1800);
 }
