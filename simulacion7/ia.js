@@ -43,25 +43,66 @@ const datos=basesDatos[base];
 agregarBot(
 
 `
-🧠 Analizando solicitud...
+🧠 Regi Analytics AI
 
 <br><br>
 
-📂 Fuente:
+Solicitud recibida:
+
+<br>
+
+<b>${texto}</b>
+
+<br><br>
+
+━━━━━━━━━━━━━━
+
+<br>
+
+📂 Fuente identificada:
+
+<br>
+
 <b>${datos.nombre}</b>
 
 <br><br>
 
+🧩 Campos detectados:
+
+<br>
+
+${Object.keys(datos.datos[0])
+.map(c=>"✓ "+c+"<br>")
+.join("")}
+
+<br>
+
 📊 Registros procesados:
-<b>${datos.datos.length}</b>
+
+<br>
+
+<b>${datos.datos.length.toLocaleString()}</b>
 
 <br><br>
 
 ⚙️ Construyendo modelo analítico...
 
+<br><br>
+
+<div class="typing">
+
+<span></span>
+<span></span>
+<span></span>
+
+</div>
+
 `
 
 );
+
+
+setTimeout(()=>{
 
 mostrarTabla(datos);
 
@@ -69,4 +110,4 @@ crearDashboard(datos);
 
 generarResumen(datos);
 
-}
+},1800);
