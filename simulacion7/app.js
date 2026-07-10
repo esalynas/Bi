@@ -86,3 +86,18 @@ procesarMensaje(entrada);
 
 
 });
+
+
+function enviarSolicitud(){
+
+const entrada=document.getElementById("entrada");
+
+if(entrada.value.trim()){
+
+procesarMensaje(entrada.value);
+
+entrada.value="";
+
+}
+
+}
