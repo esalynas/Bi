@@ -16,8 +16,9 @@ function limpiarGraficos(){
 
 function crearGrafico(id,tipo,labels,data,titulo){
 
-    const ctx=document
-    .getElementById(id);
+    const ctx=document.getElementById(id);
+
+alert("Buscando canvas: "+id+" encontrado: "+ctx);
 
 
     if(!ctx){
