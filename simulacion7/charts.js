@@ -1,3 +1,4 @@
+alert("Charts.js cargado");
 let chartInstances = [];
 
 
