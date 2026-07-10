@@ -69,8 +69,14 @@ function ejecutarIA(texto) {
     `);
 
     setTimeout(() => {
-        mostrarTabla(datos);
-        crearDashboard(datos);
-        generarResumen(datos);
+
+    agregarBot("✅ Procesamiento terminado. Ejecutando módulos...");
+
+    mostrarTabla(datos);
+
+    crearDashboard(datos);
+
+    generarResumen(datos);
+
     }, 1800);
 }
