@@ -197,6 +197,13 @@ Se identificaron patrones relevantes para análisis ejecutivo.
 `;
 
 dashboard.innerHTML=contenido;
+
+setTimeout(()=>{
+
+alert("Voy a crear gráficos");
+
 generarGraficos(datos);
+
+},500);
 
 }
