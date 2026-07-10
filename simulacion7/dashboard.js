@@ -180,6 +180,6 @@ Se identificaron patrones relevantes para análisis ejecutivo.
 `;
 
 dashboard.innerHTML=contenido;
-
+generarGraficos(datos);
 
 }
