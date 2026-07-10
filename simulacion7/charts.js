@@ -36,22 +36,38 @@ alert("Buscando canvas: "+id+" encontrado: "+ctx);
 
             datasets:[{
 
-                label:titulo,
+label:titulo,
 
-                data:data,
+data:data,
 
-                borderWidth:2
+borderWidth:2,
 
-            }]
+backgroundColor:[
+"#42b9ff",
+"#7dffb2",
+"#ffcc66",
+"#ff7d9c",
+"#b58cff"
+],
+
+borderRadius:12
+
+}]
 
         },
 
 
         options:{
 
-            responsive:true,
+responsive:true,
 
-            plugins:{
+maintainAspectRatio:false,
+
+animation:{
+    duration:1200
+},
+
+plugins:{
 
                 legend:{
                     display:true
