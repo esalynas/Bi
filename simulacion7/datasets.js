@@ -1,43 +1,126 @@
-const DATASETS = {
+const basesDatos = {
 
-    comerciantes: {
-        titulo: "Base de Comerciantes Activos",
+comerciantes:{
+nombre:"Base de Comerciantes",
 
-        columnas: [
-            "Matrícula",
-            "Razón Social",
-            "Ciudad",
-            "Estado",
-            "Empleados"
-        ],
+columnas:[
+"ID",
+"Nombre",
+"Municipio",
+"Estado",
+"Actividad"
+],
 
-        datos: [
-            ["10254","Comercial Antioquia SAS","Medellín","Activo",12],
-            ["10481","Distribuciones Norte","Bello","Activo",8],
-            ["10952","Café Premium","Envigado","Activo",15],
-            ["11201","Industria del Valle","Itagüí","Activo",24],
-            ["11842","Servicios Integrales","Sabaneta","Activo",6]
-        ]
-    },
+datos:[
 
-    ventas:{
+{
+ID:1,
+Nombre:"Industria Andina SAS",
+Municipio:"Medellín",
+Estado:"Activo",
+Actividad:"Manufactura"
+},
 
-        titulo:"Ventas 2026",
+{
+ID:2,
+Nombre:"Servicios Antioquia",
+Municipio:"Envigado",
+Estado:"Activo",
+Actividad:"Servicios"
+},
 
-        columnas:[
-            "Mes",
-            "Ventas",
-            "Meta"
-        ],
+{
+ID:3,
+Nombre:"Comercializadora Norte",
+Municipio:"Bello",
+Estado:"Inactivo",
+Actividad:"Comercio"
+}
 
-        datos:[
-            ["Enero",120,100],
-            ["Febrero",135,100],
-            ["Marzo",128,100],
-            ["Abril",146,100],
-            ["Mayo",154,100]
-        ]
+],
 
-    }
+kpis:{
+total:12540,
+activos:"92%",
+crecimiento:"8.5%"
+}
+
+},
+
+
+ventas:{
+
+nombre:"Base Comercial Ventas",
+
+columnas:[
+"Mes",
+"Ventas",
+"Clientes"
+],
+
+datos:[
+
+{
+Mes:"Enero",
+Ventas:25000000,
+Clientes:430
+},
+
+{
+Mes:"Febrero",
+Ventas:31000000,
+Clientes:510
+},
+
+{
+Mes:"Marzo",
+Ventas:28000000,
+Clientes:470
+}
+
+],
+
+kpis:{
+ventasTotales:"84M",
+clientes:"1410",
+crecimiento:"12%"
+}
+
+},
+
+
+matriculas:{
+
+nombre:"Base Matrículas",
+
+columnas:[
+"Año",
+"Nuevos",
+"Renovados"
+],
+
+datos:[
+
+{
+Año:2024,
+Nuevos:4500,
+Renovados:8200
+},
+
+{
+Año:2025,
+Nuevos:5200,
+Renovados:9000
+}
+
+],
+
+kpis:{
+total:"22.000",
+nuevos:"5.200",
+renovacion:"82%"
+}
+
+}
 
 };
