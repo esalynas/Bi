@@ -96,3 +96,4 @@ mostrarTabla(datos);
 crearDashboard(datos);
 
 generarResumen(datos);
+}
