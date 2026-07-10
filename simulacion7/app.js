@@ -32,3 +32,57 @@ estado.innerHTML=texto;
 agregarBot("🚀 Regi Analytics AI iniciado correctamente.");
 
 escribir("Sistema listo.");
+
+
+// =================================
+// MOTOR DE COMANDOS REGI ANALYTICS
+// =================================
+
+
+function procesarMensaje(texto){
+
+
+agregarUsuario(texto);
+
+
+escribir("🤖 Analizando solicitud...");
+
+
+setTimeout(()=>{
+
+
+ejecutarIA(texto);
+
+
+escribir("✅ Consulta procesada.");
+
+
+},1000);
+
+
+}
+
+
+// Simulación de entrada de texto
+// luego la conectaremos al micrófono
+
+document.addEventListener("keydown",function(e){
+
+
+if(e.key==="Enter"){
+
+
+const entrada=prompt("Escribe una solicitud para Regi Analytics");
+
+
+if(entrada){
+
+procesarMensaje(entrada);
+
+}
+
+
+}
+
+
+});
