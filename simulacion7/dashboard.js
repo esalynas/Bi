@@ -175,6 +175,23 @@ Se identificaron patrones relevantes para análisis ejecutivo.
 </div>
 
 
+<br>
+
+<h3>📊 Visualización BI</h3>
+
+<br>
+
+<canvas id="graficoEstado"></canvas>
+
+<br><br>
+
+<canvas id="graficoMunicipio"></canvas>
+
+<br><br>
+
+<canvas id="graficoVentas"></canvas>
+
+
 </div>
 
 `;
