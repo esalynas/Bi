@@ -72,11 +72,17 @@ function ejecutarIA(texto) {
 
     agregarBot("✅ Procesamiento terminado. Ejecutando módulos...");
 
-    mostrarTabla(datos);
+    console.log("Paso tabla");
 
-    crearDashboard(datos);
+mostrarTabla(datos);
 
-    generarResumen(datos);
+console.log("Paso dashboard");
+
+crearDashboard(datos);
+
+console.log("Paso resumen");
+
+generarResumen(datos);
 
     }, 1800);
 }
