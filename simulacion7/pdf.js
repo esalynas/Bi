@@ -185,3 +185,85 @@ alert(
 
 
 }
+
+
+function generarResumen(datos){
+
+    datasetActual = {
+        titulo: datos.nombre,
+        datos: datos.datos
+    };
+
+
+    const pdf =
+    document.getElementById("pdf");
+
+
+    pdf.innerHTML=`
+
+    <div class="reporte">
+
+    <h3>
+    📊 Informe Ejecutivo Generado
+    </h3>
+
+
+    <p>
+
+    <strong>Fuente:</strong>
+
+    ${datos.nombre}
+
+    </p>
+
+
+    <p>
+
+    <strong>Registros analizados:</strong>
+
+    ${datos.datos.length}
+
+    </p>
+
+
+    <p>
+
+    <strong>Análisis descriptivo:</strong>
+
+    La información fue procesada identificando variables,
+    distribución general y características relevantes
+    de la fuente analizada.
+
+    </p>
+
+
+
+    <p>
+
+    <strong>Análisis prescriptivo:</strong>
+
+    Regi Analytics recomienda profundizar el análisis
+    mediante segmentación, indicadores y seguimiento
+    continuo para apoyar decisiones estratégicas.
+
+    </p>
+
+
+    <button onclick="generarPDF()">
+
+    📄 Generar PDF Ejecutivo
+
+    </button>
+
+
+    </div>
+
+    `;
+
+
+    agregarBot(
+    "📄 Resumen ejecutivo generado correctamente."
+    );
+
+
+}
