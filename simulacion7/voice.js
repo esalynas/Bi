@@ -1,70 +1,105 @@
-let reconocimiento = null;
+let reconocimiento;
 
-function iniciarVoz(){
 
-    const SpeechRecognition =
-    window.SpeechRecognition ||
-    window.webkitSpeechRecognition;
+const SpeechRecognition =
+window.SpeechRecognition ||
+window.webkitSpeechRecognition;
 
-    if(!SpeechRecognition){
 
-        escribir("❌ Este navegador no soporta reconocimiento de voz.");
+if(SpeechRecognition){
 
-        return;
 
-    }
+reconocimiento = new SpeechRecognition();
 
-    reconocimiento = new SpeechRecognition();
 
-    reconocimiento.lang = "es-CO";
+reconocimiento.lang = "es-CO";
 
-    reconocimiento.continuous = false;
+reconocimiento.continuous = false;
 
-    reconocimiento.interimResults = false;
+reconocimiento.interimResults = false;
 
-    reconocimiento.maxAlternatives = 1;
+reconocimiento.maxAlternatives = 1;
 
-    reconocimiento.onstart = ()=>{
 
-        escribir("🎙️ Escuchando...");
 
-    };
+reconocimiento.onstart = ()=>{
 
-    reconocimiento.onresult = (e)=>{
+escribir("🎙️ Escuchando...");
 
-        const texto =
-        e.results[0][0].transcript;
+};
 
-        procesarConsulta(texto);
 
-    };
 
-    reconocimiento.onerror = (e)=>{
+reconocimiento.onresult = (event)=>{
 
-        escribir("❌ " + e.error);
 
-    };
+const texto =
+event.results[0][0].transcript;
 
-    reconocimiento.onend = ()=>{
 
-        escribir("Sistema listo.");
+procesarMensaje(texto);
 
-    };
+
+};
+
+
+
+reconocimiento.onerror = (error)=>{
+
+
+escribir("❌ Error micrófono: "+error.error);
+
+
+};
+
+
+
+reconocimiento.onend = ()=>{
+
+
+escribir("Sistema listo.");
+
+
+};
+
+
+}
+
+
+
+document
+.getElementById("micButton")
+.onclick=function(){
+
+
+speechSynthesis.cancel();
+
+
+if(reconocimiento){
+
+
+try{
+
+reconocimiento.start();
 
 }
 
-function escuchar(){
+catch(e){
 
-    if(!reconocimiento){
-
-        iniciarVoz();
-
-    }
-
-    try{
-
-        reconocimiento.start();
-
-    }catch(e){}
+console.log(e);
 
 }
+
+
+}else{
+
+
+escribir(
+"Este navegador no soporta reconocimiento de voz"
+);
+
+
+}
+
+
+};
