@@ -1,8 +1,8 @@
 function normalizarTexto(texto) {
     return texto
         .toLowerCase()
-        .normalize("NFD")           // Descompone acentos
-        .replace(/[\u0300-\u036f]/g, ""); // Elimina marcas diacríticas
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
 }
 
 function analizarSolicitud(texto) {
@@ -14,7 +14,7 @@ function analizarSolicitud(texto) {
     if (t.includes("venta") || t.includes("vender")) {
         return "ventas";
     }
-    if (t.includes("matricula") || t.includes("matrícula")) {
+    if (t.includes("matricula")) {                    // ya no hace falta la versión con tilde
         return "matriculas";
     }
 
@@ -68,24 +68,16 @@ function ejecutarIA(texto) {
         </div>
     `);
 
-    setTimeout(()=>{
+    setTimeout(() => {
+        agregarBot("🟢 Paso 1: enviando datos a tabla");
+        mostrarTabla(datos);
 
-    agregarBot("🟢 Paso 1: enviando datos a tabla");
+        agregarBot("🟢 Paso 2: creando dashboard");
+        crearDashboard(datos);
 
-    mostrarTabla(datos);
+        agregarBot("🟢 Paso 3: generando resumen");
+        generarResumen(datos);
 
-
-    agregarBot("🟢 Paso 2: creando dashboard");
-
-    crearDashboard(datos);
-
-
-    agregarBot("🟢 Paso 3: generando resumen");
-
-    generarResumen(datos);
-
-
-    agregarBot("🟢 Todos los módulos terminaron");
-
-    },1800);
+        agregarBot("🟢 Todos los módulos terminaron");
+    }, 1800);
 }
