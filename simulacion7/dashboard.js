@@ -1,379 +1,115 @@
-let datasetActual = null;
+function crearDashboard(datos){
 
+const dashboard = document.getElementById("dashboard");
 
-function mostrarDataset(nombre){
-
-    datasetActual = DATASETS[nombre];
-
-    const tabla = document.getElementById("tabla");
-
-
-    tabla.innerHTML = `
-
-    <div class="generando">
-
-        🧠 Analizando información...
-
-        <br><br>
-
-        <div class="progress">
-
-            <div id="barra"></div>
-
-        </div>
-
-        <p id="proceso">
-
-        Inicializando consulta...
-
-        </p>
-
-    </div>
-
-    `;
-
-
-    let pasos = [
-
-        "Conectando fuente de datos...",
-
-        "Validando estructura...",
-
-        "Procesando registros...",
-
-        "Construyendo tabla..."
-
-    ];
-
-
-    let i=0;
-
-
-    const intervalo=setInterval(()=>{
-
-
-        document.getElementById("proceso").innerHTML =
-        pasos[i];
-
-
-        document.getElementById("barra").style.width =
-        ((i+1)*25)+"%";
-
-
-        i++;
-
-
-        if(i===pasos.length){
-
-
-            clearInterval(intervalo);
-
-
-            construirTabla();
-
-
-        }
-
-
-    },700);
-
-
+if(!dashboard){
+    return;
 }
 
 
+let titulo = datos.nombre;
 
-function construirTabla(){
-
-
-const tabla=document.getElementById("tabla");
+let total = datos.datos.length;
 
 
-let html=`
+let contenido = "";
 
+
+contenido += `
+
+<div class="dashboard-card">
 
 <h3>
-
-${datasetActual.titulo}
-
+📊 ${titulo}
 </h3>
-
-
-<table>
-
-
-<tr>
-
-`;
-
-
-
-datasetActual.columnas.forEach(col=>{
-
-html+=`
-
-<th>${col}</th>
-
-`;
-
-});
-
-
-html+=`</tr>`;
-
-
-
-datasetActual.datos.forEach(fila=>{
-
-
-html+=`<tr>`;
-
-
-fila.forEach(valor=>{
-
-
-html+=`
-
-<td>${valor}</td>
-
-`;
-
-
-});
-
-
-html+=`</tr>`;
-
-
-});
-
-
-html+=`
-
-</table>
-
-`;
-
-
-
-tabla.innerHTML=html;
-
-
-agregarBot(
-"✅ Base generada correctamente.<br><br>Puedes solicitar un dashboard o un informe ejecutivo."
-);
-
-
-escribir("Sistema listo.");
-
-}
-
-function generarDashboard(){
-
-    const dashboard =
-    document.getElementById("dashboard");
-
-
-    if(!datasetActual){
-
-        agregarBot(
-        "⚠️ Primero debes crear una base de datos."
-        );
-
-        return;
-
-    }
-
-
-    dashboard.innerHTML=`
-
-    <div class="generando">
-
-        📊 Construyendo dashboard...
-
-        <br><br>
-
-
-        <div class="progress">
-
-            <div id="barraDash"></div>
-
-        </div>
-
-
-        <p id="pasoDash">
-
-        Calculando indicadores...
-
-        </p>
-
-
-    </div>
-
-    `;
-
-
-    let pasos=[
-
-    "Analizando variables...",
-
-    "Calculando KPIs...",
-
-    "Generando visualizaciones...",
-
-    "Dashboard listo ✔"
-
-    ];
-
-
-    let i=0;
-
-
-    const proceso=setInterval(()=>{
-
-
-        document.getElementById("pasoDash")
-        .innerHTML=pasos[i];
-
-
-        document.getElementById("barraDash")
-        .style.width=((i+1)*25)+"%";
-
-
-        i++;
-
-
-        if(i===pasos.length){
-
-
-            clearInterval(proceso);
-
-
-            pintarDashboard();
-
-
-        }
-
-
-    },700);
-
-
-
-}
-
-
-
-function pintarDashboard(){
-
-
-const dashboard =
-document.getElementById("dashboard");
-
-
-
-let html=`
 
 
 <div class="kpis">
 
-
 <div class="kpi">
 
-<h3>Total registros</h3>
+<span>Total registros</span>
 
 <strong>
-
-${datasetActual.datos.length}
-
+${total.toLocaleString()}
 </strong>
 
 </div>
 
 
-
 <div class="kpi">
 
-<h3>Fuente</h3>
+<span>Estado análisis</span>
 
 <strong>
-
-${datasetActual.titulo}
-
+✔ OK
 </strong>
 
 </div>
 
 
+<div class="kpi">
+
+<span>Motor</span>
+
+<strong>
+IA Analytics
+</strong>
+
 </div>
 
+</div>
+
+
+<hr>
 
 
 <div class="chart">
 
-<h3>Comportamiento de datos</h3>
 
+<h4>
+Distribución analítica
+</h4>
 
-`;
-
-
-
-datasetActual.datos.forEach((fila,index)=>{
-
-
-let valor =
-fila[fila.length-1];
-
-
-html+=`
 
 <div class="bar">
-
-<span>
-
-${index+1}
-
+<span style="width:75%">
 </span>
+</div>
 
 
-<div style="width:${valor}%">
+<div class="bar">
+<span style="width:55%">
+</span>
+</div>
 
+
+<div class="bar">
+<span style="width:35%">
+</span>
 </div>
 
 
 </div>
 
+
+<div class="insight">
+
+🧠 Insight IA:
+
+<br><br>
+
+La información fue procesada correctamente.
+Se identificaron patrones relevantes para análisis ejecutivo.
+
+</div>
+
+
+</div>
 
 `;
 
+dashboard.innerHTML=contenido;
 
-});
-
-
-html+=`
-
-</div>
-
-
-<p class="insight">
-
-💡 Insight generado:
-La información fue analizada para identificar patrones operativos y oportunidades de mejora.
-
-</p>
-
-
-`;
-
-
-
-dashboard.innerHTML=html;
-
-
-agregarBot(
-"📊 Dashboard generado correctamente.<br><br>Puedes solicitar un informe ejecutivo en PDF."
-);
-
-
-escribir("Dashboard listo.");
 
 }
-
