@@ -1,4 +1,7 @@
-let reconocimiento;
+document.addEventListener("DOMContentLoaded",()=>{
+
+
+const mic=document.getElementById("micButton");
 
 
 const SpeechRecognition =
@@ -6,76 +9,47 @@ window.SpeechRecognition ||
 window.webkitSpeechRecognition;
 
 
-if(SpeechRecognition){
+if(!mic){
+
+console.log("Botón micrófono no encontrado");
+
+return;
+
+}
 
 
-reconocimiento = new SpeechRecognition();
+if(!SpeechRecognition){
 
+escribir("❌ Navegador sin reconocimiento de voz");
 
-reconocimiento.lang = "es-CO";
+mic.disabled=true;
 
-reconocimiento.continuous = false;
-
-reconocimiento.interimResults = false;
-
-reconocimiento.maxAlternatives = 1;
-
-
-
-reconocimiento.onstart = ()=>{
-
-escribir("🎙️ Escuchando...");
-
-};
-
-
-
-reconocimiento.onresult = (event)=>{
-
-
-const texto =
-event.results[0][0].transcript;
-
-
-procesarMensaje(texto);
-
-
-};
-
-
-
-reconocimiento.onerror = (error)=>{
-
-
-escribir("❌ Error micrófono: "+error.error);
-
-
-};
-
-
-
-reconocimiento.onend = ()=>{
-
-
-escribir("Sistema listo.");
-
-
-};
-
+return;
 
 }
 
 
 
-document
-.getElementById("micButton")
-.onclick=function(){
+const reconocimiento=new SpeechRecognition();
+
+
+reconocimiento.lang="es-CO";
+
+reconocimiento.continuous=false;
+
+reconocimiento.interimResults=false;
+
+reconocimiento.maxAlternatives=1;
+
+
+
+mic.onclick=()=>{
 
 
 speechSynthesis.cancel();
 
 
-if(reconocimiento){
+escribir("🎙️ Escuchando...");
 
 
 try{
@@ -86,20 +60,53 @@ reconocimiento.start();
 
 catch(e){
 
-console.log(e);
-
-}
-
-
-}else{
-
-
-escribir(
-"Este navegador no soporta reconocimiento de voz"
-);
-
+console.log("Reconocimiento activo");
 
 }
 
 
 };
+
+
+
+reconocimiento.onresult=(event)=>{
+
+
+const texto=
+event.results[0][0].transcript;
+
+
+console.log("Texto capturado:",texto);
+
+
+procesarMensaje(texto);
+
+
+};
+
+
+
+reconocimiento.onerror=(event)=>{
+
+
+escribir(
+"❌ Error micrófono: "+event.error
+);
+
+
+};
+
+
+
+reconocimiento.onend=()=>{
+
+
+escribir(
+"Sistema listo."
+);
+
+
+};
+
+
+});
